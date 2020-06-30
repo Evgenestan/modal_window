@@ -44,6 +44,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: TextFormField(
                     style: TextStyle(fontSize: 16),
                     keyboardType: TextInputType.number,
+                    // Функции надо давать название, отвечающее на вопрос, что будет делать эта функция
+                    // Конкретно тут - setNumber / setCode / setSmsCode
+                    // Должно быть понятно по названию, что делает функция, а не приходилось читать весь твой код для этого
                     onChanged: onChanged,
                   ),
                 )
@@ -51,6 +54,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
           RaisedButton(
+            // То же самое, что и выше
+            // - validatePhoneNumberAndShowCodeDialog
             onPressed: onPressed,
           ),
         ],
@@ -63,6 +68,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void onPressed() {
+    // Лучше выполнять какую-то валидацию, а это именно она - в отдельном месте (функции, классе)
+    // - validatePhoneNumber
+    // Затем, число 10 у тебя - не какая-то абстрактная цифра, а вполне себе единица бизнес-логики, поэтому стоило бы для нее выделить отдельную константу и использовать ее
+    // const int PNONE_NUMBER_LENGTH = 10;
     if (number.length == 10) {
       showDialog(
           context: context,

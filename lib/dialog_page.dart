@@ -17,14 +17,23 @@ class DialogPage extends StatefulWidget {
 class _DialogPageState extends State<DialogPage> {
   FocusNode focusNode;
   bool hasError = false;
+  // timer1 есть, а где тогда timer2, 3, 4??
+  // Вообще не стоит использовать числа в названиях чего-либо если они не несут конкретный логический смысл
   Timer timer1;
+  // Поздравляю, ты заюзал в языке со статической типизацией динамическую дырку - теперь в твою переменную number можно пихать что-угодно
+  // Если ты объявляешь переменную, которая будет изначально null, и затем ты будешь в нее что-то писать - объявляй ее через тип сразу
+  // int number / double number
   var number;
   int sendTimer = 59;
+  // Тоже самое
   var _code;
   bool _codeSend = false;
 
   @override
   Widget build(BuildContext context) {
+    // Не очень понял, зачем ты это сделал
+    // Копия стандартного диалога или из какой-то либы?
+    // И почему пришлось что-то в них переписывать?
     return customDialog.Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Container(
@@ -51,8 +60,7 @@ class _DialogPageState extends State<DialogPage> {
           width: 276,
           child: RaisedButton(
             elevation: 5.0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
             color: Color(0xFF47a73c),
             disabledColor: Color(0xFFf4f4f4),
             child: Padding(
@@ -60,11 +68,9 @@ class _DialogPageState extends State<DialogPage> {
               child: FittedBox(
                 child: _codeSend
                     ? Text(
-                        sendTimer < 10
-                            ? 'Отправить ещё раз через 00:0$sendTimer'
-                            : 'Отправить ещё раз через 00:$sendTimer',
-                        style:
-                            TextStyle(fontSize: 16.0, color: Color(0xFF8c8c8c)),
+                        // Это жуть, DateFormat надо юзать
+                        sendTimer < 10 ? 'Отправить ещё раз через 00:0$sendTimer' : 'Отправить ещё раз через 00:$sendTimer',
+                        style: TextStyle(fontSize: 16.0, color: Color(0xFF8c8c8c)),
                       )
                     : Text('Отправить код',
                         style: TextStyle(
@@ -115,12 +121,13 @@ class _DialogPageState extends State<DialogPage> {
           highlight: true,
           highlightColor: Color(0xFFaeaeae),
           errorBorderColor: Colors.red,
+          // Тоже самое
           onDone: onDone,
+          // Тоже самое
           onTextChanged: onChanged,
           pinBoxDecoration: ProvidedPinBoxDecoration.defaultPinBoxDecoration,
           pinTextStyle: TextStyle(fontSize: 30.0),
-          pinTextAnimatedSwitcherTransition:
-              ProvidedPinBoxTextAnimation.scalingTransition,
+          pinTextAnimatedSwitcherTransition: ProvidedPinBoxTextAnimation.scalingTransition,
           pinTextAnimatedSwitcherDuration: Duration(milliseconds: 100),
           keyboardType: TextInputType.number,
         ),
@@ -197,6 +204,9 @@ class _DialogPageState extends State<DialogPage> {
             ),
           ),
           Text(
+            // А вот и твой баг, ты можешь быть уверен в этот момент, что твой number - все еще строка?
+            // Может это уже число - тогда у него нет таких методов
+            // К тому же стоило все же назвать ее хотя бы phoneNumber
             '+7 (${number.substring(0, 3)}) ${number.substring(3, 6)}-${number.substring(6, 8)}-${number.substring(8)}',
             textAlign: TextAlign.center,
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
