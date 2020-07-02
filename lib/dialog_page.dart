@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:pin_code_text_field/pin_code_text_field.dart';
 
-import 'dialog.dart' as customDialog;
-
 class DialogPage extends StatefulWidget {
   final number;
 
@@ -17,24 +15,16 @@ class DialogPage extends StatefulWidget {
 class _DialogPageState extends State<DialogPage> {
   FocusNode focusNode;
   bool hasError = false;
-  // timer1 есть, а где тогда timer2, 3, 4??
-  // Вообще не стоит использовать числа в названиях чего-либо если они не несут конкретный логический смысл
-  Timer timer1;
-  // Поздравляю, ты заюзал в языке со статической типизацией динамическую дырку - теперь в твою переменную number можно пихать что-угодно
-  // Если ты объявляешь переменную, которая будет изначально null, и затем ты будешь в нее что-то писать - объявляй ее через тип сразу
-  // int number / double number
-  var number;
+  Timer timerOneSec;
+  String number;
   int sendTimer = 59;
-  // Тоже самое
-  var _code;
+  String _code;
   bool _codeSend = false;
 
   @override
   Widget build(BuildContext context) {
-    // Не очень понял, зачем ты это сделал
-    // Копия стандартного диалога или из какой-то либы?
-    // И почему пришлось что-то в них переписывать?
-    return customDialog.Dialog(
+    return Dialog(
+      insetPadding: EdgeInsets.all(0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Container(
         width: 340,
@@ -60,7 +50,8 @@ class _DialogPageState extends State<DialogPage> {
           width: 276,
           child: RaisedButton(
             elevation: 5.0,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0)),
             color: Color(0xFF47a73c),
             disabledColor: Color(0xFFf4f4f4),
             child: Padding(
@@ -68,9 +59,9 @@ class _DialogPageState extends State<DialogPage> {
               child: FittedBox(
                 child: _codeSend
                     ? Text(
-                        // Это жуть, DateFormat надо юзать
-                        sendTimer < 10 ? 'Отправить ещё раз через 00:0$sendTimer' : 'Отправить ещё раз через 00:$sendTimer',
-                        style: TextStyle(fontSize: 16.0, color: Color(0xFF8c8c8c)),
+                        'Отправить ещё раз через 00:${sendTimer.toString().padLeft(2, "0")}',
+                        style:
+                            TextStyle(fontSize: 16.0, color: Color(0xFF8c8c8c)),
                       )
                     : Text('Отправить код',
                         style: TextStyle(
@@ -85,7 +76,7 @@ class _DialogPageState extends State<DialogPage> {
   }
 
   Widget codeInput() {
-    void onDone(String value) {
+    void validateCodeAndExit(String value) {
       if (value == _code) {
         print('ok');
         Navigator.pop(context);
@@ -97,7 +88,7 @@ class _DialogPageState extends State<DialogPage> {
       }
     }
 
-    void onChanged(String text) {
+    void disableError(String text) {
       setState(() {
         hasError = false;
       });
@@ -121,13 +112,12 @@ class _DialogPageState extends State<DialogPage> {
           highlight: true,
           highlightColor: Color(0xFFaeaeae),
           errorBorderColor: Colors.red,
-          // Тоже самое
-          onDone: onDone,
-          // Тоже самое
-          onTextChanged: onChanged,
+          onDone: validateCodeAndExit,
+          onTextChanged: disableError,
           pinBoxDecoration: ProvidedPinBoxDecoration.defaultPinBoxDecoration,
           pinTextStyle: TextStyle(fontSize: 30.0),
-          pinTextAnimatedSwitcherTransition: ProvidedPinBoxTextAnimation.scalingTransition,
+          pinTextAnimatedSwitcherTransition:
+              ProvidedPinBoxTextAnimation.scalingTransition,
           pinTextAnimatedSwitcherDuration: Duration(milliseconds: 100),
           keyboardType: TextInputType.number,
         ),
@@ -139,8 +129,8 @@ class _DialogPageState extends State<DialogPage> {
   void dispose() {
     focusNode.dispose();
     hasError = false;
-    if (timer1 != null) {
-      timer1.cancel();
+    if (timerOneSec != null) {
+      timerOneSec.cancel();
     }
     super.dispose();
   }
@@ -169,7 +159,7 @@ class _DialogPageState extends State<DialogPage> {
     void decrement(Timer timer) {
       if (sendTimer == 1) {
         setState(() {
-          timer1.cancel();
+          timerOneSec.cancel();
           sendTimer = 59;
           _codeSend = false;
         });
@@ -186,7 +176,7 @@ class _DialogPageState extends State<DialogPage> {
         _codeSend = true;
       });
 
-      timer1 = Timer.periodic(Duration(seconds: 1), decrement);
+      timerOneSec = Timer.periodic(Duration(seconds: 1), decrement);
     }
   }
 
