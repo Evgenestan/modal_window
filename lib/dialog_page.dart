@@ -135,6 +135,10 @@ class _DialogPageState extends State<DialogPage> {
     super.dispose();
   }
 
+  String durationFormat(Duration duration) {
+    return duration.toString().substring(2, 7);
+  }
+
   Widget errorText() {
     return Visibility(
         visible: hasError,
@@ -153,10 +157,6 @@ class _DialogPageState extends State<DialogPage> {
     number = widget.number;
     sendCode();
     super.initState();
-  }
-  
-  String durationFormat(Duration duration){
-    return duration.toString().substring(2,7);
   }
 
   void sendCode() async {
