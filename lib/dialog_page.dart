@@ -17,7 +17,7 @@ class _DialogPageState extends State<DialogPage> {
   bool hasError = false;
   Timer timerOneSec;
   String number;
-  int sendTimer = 59;
+  var sendTimer = Duration(seconds: 59);
   String _code;
   bool _codeSend = false;
 
@@ -59,7 +59,7 @@ class _DialogPageState extends State<DialogPage> {
               child: FittedBox(
                 child: _codeSend
                     ? Text(
-                        'Отправить ещё раз через 00:${sendTimer.toString().padLeft(2, "0")}',
+                        'Отправить ещё раз через ${sendTimer.toString().substring(2,7)}',
                         style:
                             TextStyle(fontSize: 16.0, color: Color(0xFF8c8c8c)),
                       )
@@ -157,15 +157,15 @@ class _DialogPageState extends State<DialogPage> {
 
   void sendCode() async {
     void decrement(Timer timer) {
-      if (sendTimer == 1) {
+      if (sendTimer == Duration(seconds: 1)) {
         setState(() {
           timerOneSec.cancel();
-          sendTimer = 59;
+          sendTimer = Duration(seconds: 59);
           _codeSend = false;
         });
       } else {
         setState(() {
-          sendTimer--;
+          sendTimer = sendTimer - Duration(seconds: 1);
         });
       }
     }
