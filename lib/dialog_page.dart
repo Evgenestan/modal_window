@@ -59,7 +59,7 @@ class _DialogPageState extends State<DialogPage> {
               child: FittedBox(
                 child: _codeSend
                     ? Text(
-                        'Отправить ещё раз через ${sendTimer.toString().substring(2,7)}',
+                        'Отправить ещё раз через ${durationFormat(sendTimer)}',
                         style:
                             TextStyle(fontSize: 16.0, color: Color(0xFF8c8c8c)),
                       )
@@ -153,6 +153,10 @@ class _DialogPageState extends State<DialogPage> {
     number = widget.number;
     sendCode();
     super.initState();
+  }
+  
+  String durationFormat(Duration duration){
+    return duration.toString().substring(2,7);
   }
 
   void sendCode() async {
